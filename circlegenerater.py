@@ -1,5 +1,6 @@
 from plangenerater import PlanGenerater
 import math
+import csv
 class CircleGenerater():
     Length_Lon = 20037000 #经线的长度
     Length_equator = 40075020
@@ -16,6 +17,17 @@ class CircleGenerater():
         self.Center_Lon = Center_Lon
         self.Center_AltRel = Center_AltRel
         self.Length_ThisLat = math.cos(2*math.pi*Center_Lat/180.0)
+
+    def FromcsvGetPointList(self,csvFileName):
+        csvPointList = []
+        with open(csvFileName) as csvfile:
+            csv_reader = csv.reader(csvfile)
+            for row in csv_reader:
+                PointElement = {"Lat":row[0],"Lon":row[1],"AltRel":row[2]}
+                csvPointList.append(PointElement)
+                
+        return csvPointList    
+        
 
     def CircleGetPointList(self,Circle_Rad,Circle_Dis,Circle_theta):
         self.PointList = [{"Lat":self.Center_Lat,"Lon":self.Center_Lon,"AltRel":self.Center_AltRel+Circle_Rad}]
@@ -62,4 +74,4 @@ class CircleGenerater():
 
 if __name__ == "__main__":
     circlegenerater = CircleGenerater()
-    circlegenerater.Run(circlegenerater.RainbowGetPointList(50,1,34.12694001,108.82283213,30,34.12710522,108.82293812,10),"testall.plan")
+    circlegenerater.Run(circlegenerater.RainbowGetPointList(30,1,34.12694001,108.82283213,30,34.12710522,108.82293812,10),"testall.plan")
