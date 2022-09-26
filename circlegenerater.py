@@ -23,10 +23,12 @@ class CircleGenerater():
         with open(csvFileName) as csvfile:
             csv_reader = csv.reader(csvfile)
             for row in csv_reader:
-                PointElement = {"Lat":row[0],"Lon":row[1],"AltRel":row[2]}
+                #print(row)
+                row = row[0].split("\t")
+                PointElement = {"Lat":row[1],"Lon":row[2],"AltRel":row[3]}
                 csvPointList.append(PointElement)
-                
-        return csvPointList    
+               
+        return csvPointList[1:len(csvPointList)]
         
 
     def CircleGetPointList(self,Circle_Rad,Circle_Dis,Circle_theta):
@@ -66,6 +68,7 @@ class CircleGenerater():
         self.plangenerater.ChangeTakeoffPoint(PointList[0]["Lat"],PointList[0]["Lon"],PointList[0]["AltRel"])
         for PointElement in PointList:
             self.plangenerater.AddWaypoint(PointElement["Lat"],PointElement["Lon"],PointElement["AltRel"])
+            print(PointElement)
         self.plangenerater.AddLandtoTakeoffPointCommand()
         self.plangenerater.GenerateFile(TargetFile)    
         
@@ -74,4 +77,5 @@ class CircleGenerater():
 
 if __name__ == "__main__":
     circlegenerater = CircleGenerater()
-    circlegenerater.Run(circlegenerater.RainbowGetPointList(30,1,34.12694001,108.82283213,30,34.12710522,108.82293812,10),"testall.plan")
+    #circlegenerater.Run(circlegenerater.RainbowGetPointList(20,1,34.12694001,108.82283213,30,34.12710522,108.82293812,0),"testall.plan")
+    circlegenerater.Run(circlegenerater.FromcsvGetPointList("point.csv"),"plan_generated.plan")
