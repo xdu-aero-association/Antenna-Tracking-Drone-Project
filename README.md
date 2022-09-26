@@ -21,11 +21,10 @@
 
 以下功能均在树莓派4机载计算机上面实现
 
-- [x] MAVROS自动控制飞行
-- [ ] MAVROS获取RTK精确定位数据
-- [ ] MAVROS获取飞行器状态信息
-- [ ] 使用USB over Network与负载建立虚拟USB网络通信
 - [ ] 三轴云台串口控制
+- [x] 航点生成
+- [ ] 云台控制
+- [ ] 图形界面
 
 ## Simulation
 
@@ -35,3 +34,5 @@
 
 - Project Owner: Phillweston
 - Copilot: Devotlig
+
+### 9月27日更新，增加csv航点导入支持
