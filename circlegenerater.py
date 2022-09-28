@@ -1,3 +1,4 @@
+from enum import Flag
 from plangenerater import PlanGenerater
 import math
 import csv
@@ -22,31 +23,38 @@ class CircleGenerater():
         csvPointList = []
         with open(csvFileName) as csvfile:
             csv_reader = csv.reader(csvfile)
+            firstrow_Flag = True
             for row in csv_reader:
                 #print(row)
-                row = row[0].split("\t")
-                PointElement = {"Lat":row[1],"Lon":row[2],"AltRel":row[3]}
+                #row = row[0].split("\t")
+                if  firstrow_Flag:
+                    firstrow_Flag = False
+                    continue
+                #print(row)
+                PointElement = {"Lat":float(row[1]),"Lon":float(row[2]),"AltRel":float(row[3]),"Pitch":float(row[4]),"Yaw":float(row[5])}
                 csvPointList.append(PointElement)
-               
-        return csvPointList[1:len(csvPointList)]
+        #print(csvPointList[1:len(csvPointList)])
+        return csvPointList#[1:len(csvPointList)]
         
 
     def CircleGetPointList(self,Circle_Rad,Circle_Dis,Circle_theta):
         self.PointList = [{"Lat":self.Center_Lat,"Lon":self.Center_Lon,"AltRel":self.Center_AltRel+Circle_Rad}]
 
     def RainbowGetPointList(self,Rainbow_Rad,Rainbow_Dis,Rainbow_Begin_Lat,Rainbow_Begin_Lon,Rainbow_Begin_AltRel,Rainbow_Center_Lat,Rainbow_Center_Lon,Rainbow_Center_AltRel):
-        RainbowPointList = [{"Lat":Rainbow_Begin_Lat,"Lon":Rainbow_Begin_Lon,"AltRel":Rainbow_Begin_AltRel}]
+        RainbowPointList = []
         Length_thisLat = self.Length_equator*math.cos(Rainbow_Center_Lat*math.pi/90)
         Rainbow_Lenthground = math.sqrt(math.pow((Rainbow_Begin_Lat-Rainbow_Center_Lat)*self.Length_Lon/360,2)+math.pow((Rainbow_Begin_Lon-Rainbow_Center_Lon)*Length_thisLat/360,2)) # length in ground
-        Rainbow_LengthPoint2Center = Rainbow_Lenthground - Rainbow_Dis
+        Rainbow_LengthPoint2Center = Rainbow_Lenthground 
         
         while Rainbow_LengthPoint2Center >= 0 :
             PointElement = {}
             PointElement["Lat"] = (Rainbow_LengthPoint2Center*Rainbow_Begin_Lat+(Rainbow_Lenthground-Rainbow_LengthPoint2Center)*Rainbow_Center_Lat)/Rainbow_Lenthground
             PointElement["Lon"] = (Rainbow_LengthPoint2Center*Rainbow_Begin_Lon+(Rainbow_Lenthground-Rainbow_LengthPoint2Center)*Rainbow_Center_Lon)/Rainbow_Lenthground
             PointElement["AltRel"] = math.sqrt(math.pow(Rainbow_Rad,2) - math.pow(Rainbow_LengthPoint2Center,2))+Rainbow_Center_AltRel
+            PointElement["Pitch"] = 180*math.acos(Rainbow_LengthPoint2Center/Rainbow_Rad)/math.pi
+            PointElement["Yaw"] = 0
             RainbowPointList.append(PointElement)
-            print(PointElement)
+            #print(PointElement)
             Rainbow_LengthPoint2Center = Rainbow_LengthPoint2Center - Rainbow_Dis
 
         Rainbow_LengthPoint2Center = Rainbow_LengthPoint2Center + Rainbow_Dis
@@ -56,8 +64,10 @@ class CircleGenerater():
             PointElement["Lat"] = (-Rainbow_LengthPoint2Center*Rainbow_Begin_Lat+(Rainbow_Lenthground+Rainbow_LengthPoint2Center)*Rainbow_Center_Lat)/Rainbow_Lenthground
             PointElement["Lon"] = (-Rainbow_LengthPoint2Center*Rainbow_Begin_Lon+(Rainbow_Lenthground+Rainbow_LengthPoint2Center)*Rainbow_Center_Lon)/Rainbow_Lenthground
             PointElement["AltRel"] = math.sqrt(math.pow(Rainbow_Rad,2) - math.pow(Rainbow_LengthPoint2Center,2))+Rainbow_Center_AltRel
+            PointElement["Pitch"] = 180*math.acos(Rainbow_LengthPoint2Center/Rainbow_Rad)/math.pi
+            PointElement["Yaw"] = 180
             RainbowPointList.append(PointElement)
-            print(PointElement)
+            #print(PointElement)
             Rainbow_LengthPoint2Center = Rainbow_LengthPoint2Center + Rainbow_Dis
 
             
@@ -67,7 +77,7 @@ class CircleGenerater():
         self.InitPlanGenerater()
         self.plangenerater.ChangeTakeoffPoint(PointList[0]["Lat"],PointList[0]["Lon"],PointList[0]["AltRel"])
         for PointElement in PointList:
-            self.plangenerater.AddWaypoint(PointElement["Lat"],PointElement["Lon"],PointElement["AltRel"])
+            self.plangenerater.AddWaypoint(PointElement["Lat"],PointElement["Lon"],PointElement["AltRel"],Gimbal_Pitch= PointElement["Pitch"],Gimball_Yaw=PointElement["Yaw"])
             print(PointElement)
         self.plangenerater.AddLandtoTakeoffPointCommand()
         self.plangenerater.GenerateFile(TargetFile)    

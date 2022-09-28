@@ -128,8 +128,28 @@ class PlanGenerater:
                 "type":"SimpleItem"
             }
         self.BaseFile["mission"]["items"].append(SpeedCommand)
-        pass
-    def AddWaypoint(self,Waypoint_Lat,Waypoint_Lon,Waypoint_AltRel,Waypoint_Speed = 5):
+    
+    def AddGimbalCommand(self,Pitch,Yaw):
+        GimbalCommand = {
+                "autoContinue":True,
+                "command":205,
+                "doJumpId":self.GetItemNum()+1,
+                "frame":2,
+                "params":[
+                    -Pitch,
+                    0,
+                    Yaw,
+                    0,
+                    0,
+                    0,
+                    2
+                ],
+                "type":"SimpleItem"
+            }
+        self.BaseFile["mission"]["items"].append(GimbalCommand)
+
+    def AddWaypoint(self,Waypoint_Lat,Waypoint_Lon,Waypoint_AltRel,Waypoint_Speed = 5,Gimbal_Pitch = 0,Gimball_Yaw = 0):
+        #AddSpeedCommand(self,Waypoint_Speed)
         WaypointCommand = {
                 "AMSLAltAboveTerrain":None,
                 "Altitude":Waypoint_AltRel,
@@ -150,7 +170,10 @@ class PlanGenerater:
                 "type":"SimpleItem"
             }
         self.BaseFile["mission"]["items"].append(WaypointCommand)
-        #self.AddSpeedCommand(Waypoint_Speed)
+        if Gimbal_Pitch != 0 or Gimball_Yaw != 0:
+            self.AddGimbalCommand(Gimbal_Pitch,Gimball_Yaw)
+        if Waypoint_Speed != 5 :
+            self.AddSpeedCommand(Waypoint_Speed)
     
     def AddLandtoTakeoffPointCommand(self):
         LandtoTakeoffPointCommand = {
@@ -179,6 +202,7 @@ class PlanGenerater:
         
 
 
+    
 if __name__ == "__main__":
     plangenerater = PlanGenerater()
     plangenerater.ChangeTakeoffPoint(51,114,4)
