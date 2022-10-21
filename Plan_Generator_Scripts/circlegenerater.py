@@ -2,6 +2,7 @@ from enum import Flag
 from plangenerater import PlanGenerater
 import math
 import csv
+import numpy as np
 class CircleGenerater():
     Length_Lon = 20037000 #经线的长度
     Length_equator = 40075020
@@ -37,8 +38,38 @@ class CircleGenerater():
         return csvPointList#[1:len(csvPointList)]
         
 
-    def CircleGetPointList(self,Circle_Rad,Circle_Dis,Circle_theta):
-        self.PointList = [{"Lat":self.Center_Lat,"Lon":self.Center_Lon,"AltRel":self.Center_AltRel+Circle_Rad}]
+    def CircleGetPointList(self,Circle_Rad,Circle_Dis,Circle_theta,Circle_Center_Lat,Circle_Center_Lon,Circle_Center_AltRel):
+        Length_thisLat = self.Length_equator*math.cos(Circle_Center_Lat*math.pi/90)
+        CirclePointList = [{"Lat":Circle_Center_Lat,"Lon":Circle_Center_Lon,"AltRel":Circle_Center_AltRel+Circle_Rad,"Pitch":90.0,"Yaw":90.0}]
+        Circle_MaxDisinGround = Circle_Rad*math.cos(Circle_theta*math.pi/180.0)
+        Last_Angle = 2 * math.pi
+        for Distance in np.arange( Circle_Dis, Circle_MaxDisinGround, Circle_Dis):
+            PointElement = {}
+            PointElement["Lat"] = Circle_Center_Lat + Distance * math.cos(Last_Angle) / self.Length_Lon *180.0
+            PointElement["Lon"] = Circle_Center_Lon + Distance * math.sin(Last_Angle) / Length_thisLat *180.0   
+            PointElement["AltRel"] = Circle_Center_AltRel + math.sqrt(Circle_Rad*Circle_Rad - Distance*Distance)
+            PointElement["Pitch"] = math.acos(Distance/Circle_Rad) * 180 / math.pi
+            PointElement["Yaw"] =180 
+            CirclePointList.append(PointElement)
+
+            # carculate the begin angle
+            Begin_Angle = Last_Angle + ( Circle_Dis / (Distance) )
+            while Begin_Angle > - 2*math.pi:
+                Begin_Angle = Begin_Angle - 2*math.pi
+
+            for Angle in np.arange (Begin_Angle, 2*math.pi + ( Circle_Dis / (Distance) ) + Begin_Angle, Circle_Dis / (Distance)):
+                
+                PointElement = {}
+                PointElement["Lat"] = Circle_Center_Lat + Distance * math.cos(Angle) / self.Length_Lon *180.0
+                PointElement["Lon"] = Circle_Center_Lon + Distance * math.sin(Angle) / Length_thisLat *180.0   
+                PointElement["AltRel"] = Circle_Center_AltRel + math.sqrt(Circle_Rad*Circle_Rad - Distance*Distance)
+                PointElement["Pitch"] = math.acos(Distance/Circle_Rad) * 180 / math.pi
+                PointElement["Yaw"] =180 - ( 180 - ( Circle_Dis / (Distance) * 180 / math.pi ) ) / 2
+                CirclePointList.append(PointElement)
+                pass
+            Last_Angle = Angle
+        return CirclePointList    
+            
 
     def RainbowGetPointList(self,Rainbow_Rad,Rainbow_Dis,Rainbow_Begin_Lat,Rainbow_Begin_Lon,Rainbow_Begin_AltRel,Rainbow_Center_Lat,Rainbow_Center_Lon,Rainbow_Center_AltRel):
         RainbowPointList = []
@@ -88,4 +119,5 @@ class CircleGenerater():
 if __name__ == "__main__":
     circlegenerater = CircleGenerater()
     #circlegenerater.Run(circlegenerater.RainbowGetPointList(20,1,34.12694001,108.82283213,30,34.12710522,108.82293812,0),"testall.plan")
-    circlegenerater.Run(circlegenerater.FromcsvGetPointList("point.csv"),"plan_generated.plan")
+    #circlegenerater.Run(circlegenerater.FromcsvGetPointList("point.csv"),"plan_generated.plan")
+    circlegenerater.Run(circlegenerater.CircleGetPointList(50,2,70,34.12710522,108.82293812,0),"testcircle2022y10m22d.plan")
