@@ -2,7 +2,7 @@ from email.mime import base
 import json
 json.encoder.FLOAT_REPR = lambda x: format(x, '.11f')
 '''
-with open("testwaypoint.plan","r",encoding = "utf-8") as f:
+with open("testwaypoint.plan", "r", encoding = "utf-8") as f:
     word = f.read()
     
     #print(word)
@@ -97,9 +97,14 @@ class PlanGenerater:
         pass
     def GetItemNum(self):
         return len(self.BaseFile["mission"]["items"])
-    def AddCommandItem(self,CommandID,param):
+    def AddCommandItem(self, CommandID, param):
         pass
     def ChangeTakeoffPoint(self, Takeoffpoint_Lat, Takeoffpoint_Lon, Takeoffpoint_AltRel):
+        ''' description 
+        :param Takeoffpoint_Lat:
+        :param Takeoffpoint_Lon:
+        :param Takeoffpoint_AltRel:
+        '''
         self.Takeoffpoint_Lat = Takeoffpoint_Lat
         self.Takeoffpoint_Lon = Takeoffpoint_Lon
         self.Takeoffpoint_AltRel = Takeoffpoint_AltRel
@@ -110,7 +115,10 @@ class PlanGenerater:
         self.BaseFile["mission"]["plannedHomePosition"][0] = Takeoffpoint_Lat
         self.BaseFile["mission"]["plannedHomePosition"][1] = Takeoffpoint_Lon
         self.BaseFile["mission"]["plannedHomePosition"][2] = Takeoffpoint_AltRel
-    def AddSpeedCommand(self,Speed):
+    def AddSpeedCommand(self, Speed):
+        ''' description 
+        :param Speed:
+        '''
         SpeedCommand = {
             "autoContinue": True,
             "command": 178,
@@ -129,7 +137,11 @@ class PlanGenerater:
         }
         self.BaseFile["mission"]["items"].append(SpeedCommand)
     
-    def AddGimbalCommand(self,Pitch,Yaw):
+    def AddGimbalCommand(self, Pitch, Yaw):
+        ''' description 
+        :param Pitch:
+        :param Yaw:
+        '''
         GimbalCommand = {
             "autoContinue": True,
             "command": 205,
@@ -149,6 +161,13 @@ class PlanGenerater:
         self.BaseFile["mission"]["items"].append(GimbalCommand)
 
     def AddWaypoint(self, Waypoint_Lat, Waypoint_Lon, Waypoint_AltRel, Waypoint_Speed = 5, Gimbal_Pitch = 0, Gimbal_Yaw = 0):
+        ''' description 
+        :param Waypoint_Lat:
+        :param Waypoint_Lon:
+        :param Waypoint_AltRel:
+        :param Gimbal_Pitch:
+        :param Gimbal_Yaw:
+        '''
         #AddSpeedCommand(self,Waypoint_Speed)
         WaypointCommand = {
             "AMSLAltAboveTerrain": None,
@@ -172,14 +191,14 @@ class PlanGenerater:
         self.BaseFile["mission"]["items"].append(WaypointCommand)
         if Gimbal_Pitch != 0 or Gimbal_Yaw != 0:
             self.AddGimbalCommand(Gimbal_Pitch, Gimbal_Yaw)
-        if Waypoint_Speed != 5 :
+        if Waypoint_Speed != 5:
             self.AddSpeedCommand(Waypoint_Speed)
     
     def AddLandtoTakeoffPointCommand(self):
         LandtoTakeoffPointCommand = {
             "autoContinue": True,
             "command": 20,
-            "doJumpId": self.GetItemNum()+1,
+            "doJumpId": self.GetItemNum() + 1,
             "frame": 2,
             "params": [
                 0,
@@ -194,8 +213,8 @@ class PlanGenerater:
         }
         self.BaseFile["mission"]["items"].append(LandtoTakeoffPointCommand)
         
-    def GenerateFile(self,TargetFileName):
-        with open(TargetFileName,"w+",encoding = "utf-8") as f:
+    def GenerateFile(self, TargetFileName):
+        with open(TargetFileName, "w+", encoding = "utf-8") as f:
             f.write(json.dumps(self.BaseFile))
             # print(self.BaseFile)
 
