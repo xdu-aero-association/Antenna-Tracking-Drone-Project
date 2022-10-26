@@ -1,3 +1,3 @@
-Number	Latitude	Longitude	Altitude_Rel
-1	1	2	3
-2	4	5	5
+Number,"	Latitude	",Lontitude,AltRel,Pitch,Yaw
+1,34.12695624,108.8228425,17.76797059,62.67269161,0
+2,34.12697246,108.822853,18.25003289,65.85338231,0
