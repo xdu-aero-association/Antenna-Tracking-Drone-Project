@@ -106,9 +106,9 @@ class PlanGenerater:
 
     def ChangeTakeoffPoint(self, Takeoffpoint_Lat, Takeoffpoint_Lon, Takeoffpoint_AltRel):
         ''' description 
-        :param Takeoffpoint_Lat:
-        :param Takeoffpoint_Lon:
-        :param Takeoffpoint_AltRel:
+        :param Takeoffpoint_Lat: 起飞后到达点的纬度
+        :param Takeoffpoint_Lon:起飞后到达点的经度
+        :param Takeoffpoint_AltRel:起飞后到达点的高度
         '''
         self.Takeoffpoint_Lat = Takeoffpoint_Lat
         self.Takeoffpoint_Lon = Takeoffpoint_Lon
@@ -123,7 +123,7 @@ class PlanGenerater:
 
     def AddSpeedCommand(self, Speed):
         ''' description 
-        :param Speed:
+        :param Speed:所添加的速度值
         '''
         SpeedCommand = {
             "autoContinue": True,
@@ -145,8 +145,8 @@ class PlanGenerater:
     
     def AddGimbalCommand(self, Pitch, Yaw):
         ''' description 
-        :param Pitch:
-        :param Yaw:
+        :param Pitch:云台的pitch值
+        :param Yaw:云台的yaw值
         '''
         GimbalCommand = {
             "autoContinue": True,
@@ -168,11 +168,11 @@ class PlanGenerater:
 
     def AddWaypoint(self, Waypoint_Lat, Waypoint_Lon, Waypoint_AltRel, Waypoint_Speed = 5, Gimbal_Pitch = 0, Gimbal_Yaw = 0):
         ''' description 
-        :param Waypoint_Lat:
-        :param Waypoint_Lon:
-        :param Waypoint_AltRel:
-        :param Gimbal_Pitch:
-        :param Gimbal_Yaw:
+        :param Waypoint_Lat:航点的纬度
+        :param Waypoint_Lon:航点的经度
+        :param Waypoint_AltRel:航点的相对高度
+        :param Gimbal_Pitch:航点的pitch值
+        :param Gimbal_Yaw:航点的yaw值
         '''
         # AddSpeedCommand(self, Waypoint_Speed)
         WaypointCommand = {

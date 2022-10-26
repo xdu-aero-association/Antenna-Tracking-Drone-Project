@@ -15,10 +15,10 @@ class CircleGenerater():
 
     def SetCenter(self, Center_Lat, Center_Lon, Center_AltRel):
         ''' description 
-        :param Center_Lat:
-        :param Center_Lon:
-        :param Center_AltRel:
-        :return:
+        :param Center_Lat:中心点的纬度
+        :param Center_Lon:中心点的经度
+        :param Center_AltRel:中心点的相对高度
+        :return:无
         '''
         self.Center_Lat = Center_Lat
         self.Center_Lon = Center_Lon
@@ -27,8 +27,8 @@ class CircleGenerater():
 
     def FromcsvGetPointList(self, csvFileName):    
         ''' description 
-        :param csvFileName:
-        :return:
+        :param csvFileName:从该csv文件中获取航点列表
+        :return:返回航点列表
         '''
         csvPointList = []
         with open(csvFileName) as csvfile:
@@ -49,13 +49,13 @@ class CircleGenerater():
 
     def CircleGetPointList(self, Circle_Rad, Circle_Dis, Circle_theta, Circle_Center_Lat, Circle_Center_Lon, Circle_Center_AltRel):
         ''' description 
-        :param Circle_Rad:
-        :param Circle_Dis:
-        :param Circle_theta:
-        :param Circle_Center_Lat:
-        :param Circle_Center_Lon:
-        :param Circle_Center_AltRel:
-        :return:
+        :param Circle_Rad:生成球体的半径
+        :param Circle_Dis:生成球体的两个航点之间的距离
+        :param Circle_theta:生成球体的与中心轴相对的最大角度
+        :param Circle_Center_Lat:生成球体的中心点的纬度
+        :param Circle_Center_Lon:生成球体的中心点的经度
+        :param Circle_Center_AltRel:生成球体的中心点的相对高度
+        :return:返回航点列表
         '''
         Length_thisLat = self.Length_equator * math.cos(Circle_Center_Lat * math.pi / 90)
         CirclePointList = [{"Lat": Circle_Center_Lat, "Lon": Circle_Center_Lon, "AltRel": Circle_Center_AltRel + Circle_Rad, "Pitch": 90.0, "Yaw": 90.0}]
@@ -90,15 +90,15 @@ class CircleGenerater():
 
     def RainbowGetPointList(self, Rainbow_Rad, Rainbow_Dis, Rainbow_Begin_Lat, Rainbow_Begin_Lon, Rainbow_Begin_AltRel, Rainbow_Center_Lat, Rainbow_Center_Lon, Rainbow_Center_AltRel):
         ''' description 
-        :param Rainbow_Rad:
-        :param Rainbow_Dis:
-        :param Rainbow_Begin_Lat:
-        :param Rainbow_Begin_Lon:
-        :param Rainbow_Begin_AltRel:
-        :param Rainbow_Center_Lat:
-        :param Rainbow_Center_Lon:
-        :param Rainbow_Center_AltRel:
-        :return:
+        :param Rainbow_Rad:生成弧线的半径
+        :param Rainbow_Dis:生成弧线相邻两个点的距离
+        :param Rainbow_Begin_Lat:生成弧线的起始点的纬度
+        :param Rainbow_Begin_Lon:生成弧线的起始点的经度
+        :param Rainbow_Begin_AltRel:生成弧线的起始点的相对高度
+        :param Rainbow_Center_Lat:生成弧线的中心点的纬度
+        :param Rainbow_Center_Lon:生成弧线的中心点的经度
+        :param Rainbow_Center_AltRel:生成弧线的中心点的相对高度
+        :return:返回航点列表
         '''
         RainbowPointList = []
         Length_thisLat = self.Length_equator * math.cos(Rainbow_Center_Lat * math.pi / 90)
@@ -134,8 +134,8 @@ class CircleGenerater():
 
     def Run(self, PointList, TargetFile):
         ''' description 
-        :param PointList:
-        :param TargetFile:
+        :param PointList:航点列表
+        :param TargetFile:生成的plan文件的名字
         '''
         self.InitPlanGenerater()
         self.plangenerater.ChangeTakeoffPoint(PointList[0]["Lat"], PointList[0]["Lon"], PointList[0]["AltRel"])
