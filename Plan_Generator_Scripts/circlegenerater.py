@@ -58,7 +58,7 @@ class CircleGenerater():
         :return:
         '''
         Length_thisLat = self.Length_equator * math.cos(Circle_Center_Lat * math.pi / 90)
-        CirclePointList = [{"Lat": Circle_Center_Lat,"Lon": Circle_Center_Lon, "AltRel": Circle_Center_AltRel + Circle_Rad, "Pitch": 90.0, "Yaw": 90.0}]
+        CirclePointList = [{"Lat": Circle_Center_Lat, "Lon": Circle_Center_Lon, "AltRel": Circle_Center_AltRel + Circle_Rad, "Pitch": 90.0, "Yaw": 90.0}]
         Circle_MaxDisinGround = Circle_Rad * math.cos(Circle_theta * math.pi / 180.0)
         Last_Angle = 2 * math.pi
         for Distance in np.arange( Circle_Dis, Circle_MaxDisinGround, Circle_Dis):
@@ -76,7 +76,6 @@ class CircleGenerater():
                 Begin_Angle = Begin_Angle - 2 * math.pi
 
             for Angle in np.arange (Begin_Angle, 2 * math.pi + Circle_Dis / Distance + Begin_Angle, Circle_Dis / Distance):
-                
                 PointElement = {}
                 PointElement["Lat"] = Circle_Center_Lat + Distance * math.cos(Angle) / self.Length_Lon * 180.0
                 PointElement["Lon"] = Circle_Center_Lon + Distance * math.sin(Angle) / Length_thisLat * 180.0
@@ -145,7 +144,7 @@ class CircleGenerater():
             print(PointElement)
         self.plangenerater.AddLandtoTakeoffPointCommand()
         self.plangenerater.GenerateFile(TargetFile)    
-        
+
 
 
 

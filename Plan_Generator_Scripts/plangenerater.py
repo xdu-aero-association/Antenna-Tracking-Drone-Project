@@ -74,6 +74,7 @@ class PlanGenerater:
         },
         "version": 1
     }
+
     BaseItem = {
         "AMSLAltAboveTerrain": None,
         "Altitude": 50,
@@ -93,12 +94,16 @@ class PlanGenerater:
         ],
         "type": "SimpleItem"
     }
+
     def __init__(self) -> None:
         pass
+
     def GetItemNum(self):
         return len(self.BaseFile["mission"]["items"])
+
     def AddCommandItem(self, CommandID, param):
         pass
+
     def ChangeTakeoffPoint(self, Takeoffpoint_Lat, Takeoffpoint_Lon, Takeoffpoint_AltRel):
         ''' description 
         :param Takeoffpoint_Lat:
@@ -115,6 +120,7 @@ class PlanGenerater:
         self.BaseFile["mission"]["plannedHomePosition"][0] = Takeoffpoint_Lat
         self.BaseFile["mission"]["plannedHomePosition"][1] = Takeoffpoint_Lon
         self.BaseFile["mission"]["plannedHomePosition"][2] = Takeoffpoint_AltRel
+
     def AddSpeedCommand(self, Speed):
         ''' description 
         :param Speed:
@@ -122,7 +128,7 @@ class PlanGenerater:
         SpeedCommand = {
             "autoContinue": True,
             "command": 178,
-            "doJumpId": self.GetItemNum()+1,
+            "doJumpId": self.GetItemNum() + 1,
             "frame": 2,
             "params": [
                 1,
@@ -145,7 +151,7 @@ class PlanGenerater:
         GimbalCommand = {
             "autoContinue": True,
             "command": 205,
-            "doJumpId": self.GetItemNum()+1,
+            "doJumpId": self.GetItemNum() + 1,
             "frame": 2,
             "params": [
                 -Pitch,
@@ -168,14 +174,14 @@ class PlanGenerater:
         :param Gimbal_Pitch:
         :param Gimbal_Yaw:
         '''
-        #AddSpeedCommand(self,Waypoint_Speed)
+        # AddSpeedCommand(self, Waypoint_Speed)
         WaypointCommand = {
             "AMSLAltAboveTerrain": None,
             "Altitude": Waypoint_AltRel,
             "AltitudeMode": 1,
             "autoContinue": True,
             "command": 16,
-            "doJumpId": self.GetItemNum()+1,
+            "doJumpId": self.GetItemNum() + 1,
             "frame": 3,
             "params": [
                 0,
@@ -186,14 +192,14 @@ class PlanGenerater:
                 Waypoint_Lon,
                 Waypoint_AltRel
             ],
-            "type":"SimpleItem"
+            "type": "SimpleItem"
         }
         self.BaseFile["mission"]["items"].append(WaypointCommand)
         if Gimbal_Pitch != 0 or Gimbal_Yaw != 0:
             self.AddGimbalCommand(Gimbal_Pitch, Gimbal_Yaw)
         if Waypoint_Speed != 5:
             self.AddSpeedCommand(Waypoint_Speed)
-    
+
     def AddLandtoTakeoffPointCommand(self):
         LandtoTakeoffPointCommand = {
             "autoContinue": True,
@@ -212,16 +218,15 @@ class PlanGenerater:
             "type": "SimpleItem"
         }
         self.BaseFile["mission"]["items"].append(LandtoTakeoffPointCommand)
-        
+
     def GenerateFile(self, TargetFileName):
         with open(TargetFileName, "w+", encoding = "utf-8") as f:
             f.write(json.dumps(self.BaseFile))
             # print(self.BaseFile)
 
-        
 
 
-    
+
 if __name__ == "__main__":
     plangenerater = PlanGenerater()
     plangenerater.ChangeTakeoffPoint(51, 114, 4)
