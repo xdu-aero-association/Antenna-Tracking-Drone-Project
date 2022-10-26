@@ -48,7 +48,7 @@ class CircleGenerater():
             PointElement = {}
             PointElement["Lat"] = Circle_Center_Lat + Distance * math.cos(Last_Angle) / self.Length_Lon  * 180.0
             PointElement["Lon"] = Circle_Center_Lon + Distance * math.sin(Last_Angle) / Length_thisLat  * 180.0   
-            PointElement["Alt`Rel"] = Circle_Center_AltRel + math.sqrt(Circle_Rad * Circle_Rad - Distance * Distance)
+            PointElement["AltRel"] = Circle_Center_AltRel + math.sqrt(math.pow(Circle_Rad, 2) - math.pow(Distance, 2))
             PointElement["Pitch"] = math.acos(Distance / Circle_Rad) * 180 / math.pi
             PointElement["Yaw"] = 180 
             CirclePointList.append(PointElement)
